@@ -3,7 +3,7 @@
  "packages":
  [{"type": "path",
    "scope": "",
-   "name": "PalomarTemplate",
+   "name": "Erdos607",
    "manifestFile": "lake-manifest.json",
    "inherited": false,
    "dir": "../",
