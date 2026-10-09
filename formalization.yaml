@@ -1,0 +1,122 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml v0.4
+version: "v0.4"
+
+project:
+  name: "Erdos607"
+  description: >-
+    Machine-checked upper bound on Erdős problem 607. For n ≥ 2 let F(n) be the
+    number of distinct multiplicity sets A(P) that can arise from a collection P
+    of n points of the plane, where A(P) is the set of block sizes (point counts)
+    of the lines determined by P. The proof shows that the lines of P form a
+    pairwise-balanced design on the n points (every pair of points lies on
+    exactly one line, and each line contains at least two points), so A(P) is
+    exactly the set of block sizes of such a PBD. Hence F(n) is bounded by the
+    number of PBD profile sets on n points, and the Colbourn–Phelps–Rödl (1984)
+    Theorem 2.4 bound exp(c·√n) on that quantity gives F(n) ≤ exp(c·√n). The
+    CPR-1984 PBD bound is a published theorem and is taken as the hypothesis
+    hCPR; it is cited, not re-proved here. This repository contains zero axioms
+    and zero sorry in the proof development (the only sorry is the deliberate
+    statement surface in Challenge.lean).
+  authors:
+    - "Raphael Delors"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Raphael Delors"
+
+classification:
+  arxiv: ["math.CO"]
+  msc2020: ["05D10", "52C10"]
+
+sources:
+  - title: "Upper bound exp(c·√n) on the number of distinct multiplicity sets of n-point plane configurations (Erdős problem 607)"
+    type: original-proof
+    relationship: other
+    note: "The reduction (lines of a point set form a pairwise-balanced design, so multiplicity sets are PBD profiles) and the resulting upper bound are proved in this formalization."
+    author_endorsement: "n/a"
+  - title: "Block Sizes in Pairwise Balanced Designs"
+    authors:
+      - "Charles J. Colbourn"
+      - "Kevin T. Phelps"
+      - "Vojtěch Rödl"
+    type: article
+    relationship: background
+    id: "https://doi.org/10.4153/CMB-1984-057-0"
+    location: "Canadian Mathematical Bulletin 27(3), 375-380 (1984)"
+    note: "Theorem 2.4 (Colbourn–Phelps–Rödl) bounds the number of PBD profile sets on n points by exp(c·√n); taken here as the hypothesis hCPR and not re-proved."
+    license: "unknown"
+    author_endorsement: "not-contacted"
+  - title: "Erdős problem 607"
+    type: web post
+    relationship: background
+    id: "https://erdosproblems.com/607"
+    location: "https://erdosproblems.com/607"
+    note: "The open problem whose order of growth is bounded by this result."
+    author_endorsement: "n/a"
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Formalizes the upper bound F(n) ≤ exp(c·√n) on the number of distinct
+    multiplicity sets of n-point plane configurations (Erdős problem 607),
+    conditional on the Colbourn–Phelps–Rödl (1984) PBD profile bound, which is
+    taken as the hypothesis hCPR and cited rather than re-proved. The proof
+    library (Erdos607/Proof.lean) contains no axioms and no sorry; the only
+    sorry in the repository is the deliberate statement surface in Challenge.lean.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: agent
+      models: ["qwen3.8-27b"]
+      framework: "n/a"
+      tool_setup: >-
+        AI-assisted. Lean 4.35.0-rc2 and mathlib (cached oleans). An LLM agent
+        drove proof search and Lean elaboration iteration; the mathematical
+        reduction and its correctness were identified and audited by a human.
+      cost:
+        wall_time: "approximately two days of wall time, iterative"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: "n/a"
+  spend_usd: "subscription-based"
+  notes: >-
+    The proof was developed iteratively with an LLM agent (qwen3.8-27b served
+    through a local llama-swap endpoint). The key combinatorial observation
+    (the lines determined by a point set constitute a pairwise-balanced design,
+    so the multiplicity set is exactly the set of block sizes of such a design)
+    was identified and checked by a human; the Lean formalization, tactic search,
+    and the reduction proof were AI-assisted; the final statement and scope were
+    audited by a human.
+
+fidelity:
+  divergences: >-
+    The Colbourn–Phelps–Rödl (1984) Theorem 2.4 PBD profile bound is taken as a
+    hypothesis (hCPR) rather than re-proved. The formalization proves the
+    reduction from Erdős 607 multiplicity sets to PBD profile sets and the
+    resulting exp(c·√n) upper bound conditional on that published theorem.
+
+review:
+  status: "self-assessed"
+  reviewers: []
+  notes: >-
+    Statement and combinatorial reduction audited by a human. The whole
+    development is machine-checked with Lean 4.35.0-rc2 and mathlib (no axioms,
+    no sorry in the proof library). No external peer review has been completed.
+
+alignment:
+  namespace: "Erdos607"
+  statements:
+    - source: "Erdős problem 607 upper bound; Colbourn–Phelps–Rödl (1984) Theorem 2.4"
+      lean: "Erdos607.main_result"
+      module: "Solution"
+      status: "proved"
+      note: "Proved via Erdos607.conditional_bound in the Erdos607 library; the CPR PBD profile bound is the hypothesis hCPR."
+
+acknowledgements: >-
+  Lean 4, mathlib, the Palomar template, and the Erdős Problems website
+  (erdosproblems.com). AI assistance via qwen3.8-27b served locally through
+  llama-swap.
