@@ -11,6 +11,14 @@ on:
         description: Full 40-character commit to verify (the caller's HEAD)
         required: true
         type: string
+      request_id:
+        description: Opaque 12-char lowercase submission id
+        required: true
+        type: string
+      options:
+        description: JSON object of optional submission fields
+        required: true
+        type: string
 
 jobs:
   verify:
@@ -19,7 +27,7 @@ jobs:
       repository: ${{ inputs.repository }}
       commit: ${{ inputs.commit }}
       pipeline_commit: d4e41c1d5b0d114c4859e6e5831dc6d3ad1d0d44
-      request_id: rapha-607-preflight-20261010
+      request_id: ${{ inputs.request_id }}
       mode: full
       execution_profile: palomar-standard-v1
-      options: "{}"
+      options: ${{ inputs.options }}
