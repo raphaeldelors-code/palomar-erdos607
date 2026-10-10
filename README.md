@@ -5,23 +5,48 @@
 A [Palomar](https://palomar-registry.org/) submission. For `n ≥ 2`, let
 `F(n)` be the number of distinct **multiplicity sets** `A(P)` arising from a
 collection `P` of `n` points of the plane, where `A(P)` is the set of block
-sizes (point counts) of the lines determined by `P`. This repository proves a
-machine-checked upper bound for Erdős problem 607
-(https://erdosproblems.com/607):
+sizes (point counts) of the lines determined by `P`. Erdős asked (problem
+607, https://erdosproblems.com/607, $250 prize) whether `F(n) ≤ exp(O(√n))`.
 
-> If the number of profile sets of pairwise-balanced designs on an
-> `n`-element universe is at most `exp(c·√n)` — the bound of
-> Colbourn–Phelps–Rödl, *Block Sizes in Pairwise Balanced Designs*,
-> Canadian Mathematical Bulletin 27(3), 375–380 (1984), Theorem 2.4 — then
-> `F(n) ≤ exp(c·√n)` for every `n`.
+## Result
 
-The key combinatorial step: the lines determined by `P` form a
-pairwise-balanced design on the `n` points (every pair of points lies on
-exactly one line; every line contains at least two points), so `A(P)` is
-exactly the set of block sizes of such a design, and `F(n)` is bounded by the
-number of PBD profile sets on `n` points. The CPR-1984 PBD profile bound is a
-published, independently verified theorem; it is cited here and taken as the
-hypothesis `hCPR`, not re-proved in this repository.
+**Upper bound (proved here, machine-checked).** For every `n ≥ 2`, if the
+number of profile sets of pairwise-balanced designs (PBDs) on an
+`n`-element universe is at most `exp(c·√n)` — the bound of Theorem 2.4 of
+Colbourn–Phelps–Rödl, *Block Sizes in Pairwise Balanced Designs*, Canadian
+Mathematical Bulletin 27(3), 375–380 (1984) — then `F(n) ≤ exp(c·√n)` for
+every `n ≥ 2`.
+
+The quantifier is deliberately restricted to `n ≥ 2`, the range in which the
+bound is meaningful (a single point determines no line); the CPR PBD bound is
+a published, independently verified theorem and is taken as the hypothesis
+`hCPR`, not re-proved in this repository.
+
+**Order of growth (upper bound + cited lower bound).** The Szemerédi–Trotter
+lattice-grid construction — the extremal example behind their incidence
+theorem, *Extremal problems in discrete geometry*, Combinatorica 3(3),
+381–392 (1983) — gives the matching lower bound `F(n) ≥ exp(c'·√n)` (cited,
+not re-proved here). Together the upper bound proved in this repository and
+that lower bound pin down `F(n) = exp(Θ(√n))`, confirming exactly the `√n`
+scale Erdős predicted.
+
+## What is new and what is assumed
+
+- **New, machine-checked.** The reduction: the lines determined by `P` form a
+  PBD on the `n` points (every pair of points lies on exactly one line, and
+  each line contains at least two points), so `A(P)` is exactly the block-size
+  set of such a PBD, and `F(n)` is bounded by the number of PBD profile sets
+  on `n` points. Combined with the CPR-1984 PBD bound, this yields
+  `F(n) ≤ exp(c·√n)` for all `n ≥ 2`.
+- **Assumed, cited.** The CPR-1984 PBD profile-set bound (hypothesis `hCPR`)
+  and the Szemerédi–Trotter (1983) grid lower bound. Both are standard,
+  independently published results; this repository does not re-prove them.
+- **On "profile set".** `A(P)` is a *set* of block sizes — the
+  multiplicity-set version of the question. This is the object Erdős 607
+  asks about. (The finer *multiset* of line sizes grows on a larger scale,
+  `exp(√n·log n)`; that is a different, strictly stronger quantity and is not
+  the claim made here.) The reduction to PBD profile *sets* is the step that
+  makes the `exp(√n)` bound apply at all.
 
 ## Repository map
 

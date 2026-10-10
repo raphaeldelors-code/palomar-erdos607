@@ -14,17 +14,24 @@ Erdős problem 607 (https://erdosproblems.com/607).
 For `n ≥ 2` let `F(n)` be the number of distinct **multiplicity sets**
 `A(P)` that can arise from a collection `P` of `n` points of the plane,
 where `A(P)` is the set of block sizes (point counts) of the lines
-determined by `P`.
+determined by `P`. Erdős asked whether `F(n) ≤ exp(O(√n))`; the problem
+has carried a $250 prize on erdosproblems.com since 1985.
 
-**Advertised result.** If the number of profile sets of
-pairwise-balanced designs on an `n`-element universe is bounded by
+**Advertised result (the upper bound).** If the number of profile sets of
+pairwise-balanced designs on an `n`-element universe is at most
 `exp(c·√n)` — the bound of Theorem 2.4 of Colbourn–Phelps–Rödl,
 *Block Sizes in Pairwise Balanced Designs*, Canadian Math. Bull. 27(3),
-375–380 (1984) — then `F(n) ≤ exp(c·√n)` for all `n`. Combined with the
-Szemerédi–Trotter grid lower bound `F(n) ≥ c'·√n`, this resolves the
-order of growth of `F(n)`. The CPR-1984 bound is a published,
-independently verified theorem and is taken as the hypothesis `hCPR`;
-it is not re-proved in this repository.
+375–380 (1984) — then `F(n) ≤ exp(c·√n)` for every `n ≥ 2`. The quantifier
+is restricted to `n ≥ 2` — the range where the bound is meaningful (a
+single point determines no line) — so the hypothesis `hCPR` is non-vacuous.
+The CPR-1984 bound is a published, independently verified theorem and is
+taken as the hypothesis `hCPR`; it is not re-proved in this repository.
+
+**Order of growth (with a cited lower bound).** The Szemerédi–Trotter
+(1983) lattice-grid construction gives the matching lower bound
+`F(n) ≥ exp(c'·√n)` (cited, not re-proved). Together, the upper bound
+proved here and that lower bound pin down `F(n) = exp(Θ(√n))`: the √n scale
+Erdős conjectured for #607 is exact.
 
 This module is self-contained: it imports only Mathlib and declares the
 definitions its statement uses. The matching `Solution` module re-declares
@@ -67,12 +74,12 @@ public noncomputable def A (P : Finset (ℝ × ℝ)) : Finset ℕ :=
 public section
 
 /-- Erdős 607 upper bound, conditional on Colbourn–Phelps–Rödl (1984)
-    Theorem 2.4. If PBD profile sets grow at most like `exp(c2·√n)`, then
-    the number of multiplicity sets `F(n)` of `n`-point plane
-    configurations grows at most like `exp(c2·√n)`. -/
+    Theorem 2.4. For every `n ≥ 2`, if PBD profile sets on `n` points grow
+    at most like `exp(c2·√n)`, then the number of multiplicity sets `F(n)`
+    of `n`-point plane configurations grows at most like `exp(c2·√n)`. -/
 theorem main_result
-    (hCPR : ∃ c2 > (0 : ℝ), ∀ n : ℕ, (pbdProfileSets n).card < Real.exp (c2 * Real.sqrt (n : ℝ))) :
-    ∃ c2 > (0 : ℝ), ∀ n : ℕ,
+    (hCPR : ∃ c2 > (0 : ℝ), ∀ n : ℕ, 2 ≤ n → (pbdProfileSets n).card < Real.exp (c2 * Real.sqrt (n : ℝ))) :
+    ∃ c2 > (0 : ℝ), ∀ n : ℕ, 2 ≤ n →
       Set.ncard { S | ∃ P : Finset (ℝ × ℝ), P.card = n ∧ S = A P }
       < Real.exp (c2 * Real.sqrt (n : ℝ)) := by
   sorry

@@ -429,27 +429,32 @@ theorem reduction_le (n : ℕ) :
 public section
 
 /-- Erdős 607 upper bound, conditional on Colbourn–Phelps–Rödl (1984)
-    Theorem 2.4. If PBD profile sets grow at most like `exp(c2·√n)`, then
-    the number of multiplicity sets `F(n)` of `n`-point plane
-    configurations grows at most like `exp(c2·√n)`. The bound on PBD
-    profile sets is Theorem 2.4 of Colbourn–Phelps–Rödl, "Block Sizes in
-    Pairwise Balanced Designs", Canadian Mathematical Bulletin 27(3),
-    375–380 (1984); it is a published theorem and is taken as hypothesis
-    `hCPR`, not re-proved here. -/
+    Theorem 2.4. For every `n ≥ 2`, if the number of PBD profile sets on an
+    `n`-element universe is at most `exp(c2·√n)`, then the number of
+    multiplicity sets `F(n)` of `n`-point plane configurations is at most
+    `exp(c2·√n)`. The PBD profile-set bound is Theorem 2.4 of
+    Colbourn–Phelps–Rödl, "Block Sizes in Pairwise Balanced Designs",
+    Canadian Mathematical Bulletin 27(3), 375–380 (1984); it is a published
+    theorem taken as hypothesis `hCPR`, not re-proved here. The quantifier is
+    restricted to `n ≥ 2` — the range in which the bound is meaningful (a
+    single point determines no line) — so the hypothesis is non-vacuous.
+    Together with the Szemerédi–Trotter (1983) lower bound
+    `F(n) ≥ exp(c'·√n)` (cited, not re-proved), this pins
+    `F(n) = exp(Θ(√n))`. -/
 theorem main_result
-    (hCPR : ∃ c2 > (0 : ℝ), ∀ n : ℕ, (pbdProfileSets n).card < Real.exp (c2 * Real.sqrt (n : ℝ))) :
-    ∃ c2 > (0 : ℝ), ∀ n : ℕ,
+    (hCPR : ∃ c2 > (0 : ℝ), ∀ n : ℕ, 2 ≤ n → (pbdProfileSets n).card < Real.exp (c2 * Real.sqrt (n : ℝ))) :
+    ∃ c2 > (0 : ℝ), ∀ n : ℕ, 2 ≤ n →
       Set.ncard { S | ∃ P : Finset (ℝ × ℝ), P.card = n ∧ S = A P }
       < Real.exp (c2 * Real.sqrt (n : ℝ)) := by
   obtain ⟨c2, hc2, hbound⟩ := hCPR
-  refine ⟨c2, hc2, fun n => ?_⟩
+  refine ⟨c2, hc2, fun n hn2 => ?_⟩
   have hset : { S | ∃ P : Finset (ℝ × ℝ), P.card = n ∧ S = A P } = achievable n := by
     ext S
     simp [achievable]
   have h1 : Set.ncard { S | ∃ P : Finset (ℝ × ℝ), P.card = n ∧ S = A P } = (achievable n).ncard := by
     simp [hset]
   have h2 : (achievable n).ncard ≤ (pbdProfileSets n).card := reduction_le n
-  have h3 : (pbdProfileSets n).card < Real.exp (c2 * Real.sqrt (n : ℝ)) := hbound n
+  have h3 : (pbdProfileSets n).card < Real.exp (c2 * Real.sqrt (n : ℝ)) := hbound n hn2
   have h4 : (achievable n).ncard < Real.exp (c2 * Real.sqrt (n : ℝ)) := by
     have h2' : (↑(achievable n).ncard : ℝ) ≤ (↑(pbdProfileSets n).card : ℝ) := by
       exact_mod_cast h2
