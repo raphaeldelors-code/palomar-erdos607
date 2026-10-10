@@ -32,21 +32,31 @@ scale Erdős predicted.
 
 ## What is new and what is assumed
 
-- **New, machine-checked.** The reduction: the lines determined by `P` form a
-  PBD on the `n` points (every pair of points lies on exactly one line, and
-  each line contains at least two points), so `A(P)` is exactly the block-size
-  set of such a PBD, and `F(n)` is bounded by the number of PBD profile sets
-  on `n` points. Combined with the CPR-1984 PBD bound, this yields
-  `F(n) ≤ exp(c·√n)` for all `n ≥ 2`.
-- **Assumed, cited.** The CPR-1984 PBD profile-set bound (hypothesis `hCPR`)
-  and the Szemerédi–Trotter (1983) grid lower bound. Both are standard,
-  independently published results; this repository does not re-prove them.
+We are explicit about which element of the result is new and which is
+taken from the published literature. The full prior-art search is in
+[PROVENANCE.md](PROVENANCE.md).
+
+- **New (this work, machine-checked): the geometric corollary.** Applying
+  the published CPR-1984 PBD profile-set bound to the *specific* PBD family
+  arising as the lines of plane point sets gives `F(n) <= exp(c·sqrt(n))`
+  for all `n >= 2`, answering Erdős 607. No source examined in the search
+  states this geometric corollary; it is first presented here. The
+  machine-checked reduction below is the step that makes it valid.
+- **Standard characterization (textbook, not a new theorem).** The lines
+  determined by `P` form a PBD on the `n` points (every pair of points lies
+  on exactly one line, and each line contains at least two points), so
+  `A(P)` is exactly the block-size set of such a PBD.
+- **Assumed, cited.** The CPR-1984 PBD profile-set bound (hypothesis
+  `hCPR`) and the Szemerédi–Trotter (1983) grid lower bound. Both are
+  standard, independently published results; this repository does not
+  re-prove them. The bound itself is *not* new — only its geometric
+  application to point-set line sets is.
 - **On "profile set".** `A(P)` is a *set* of block sizes — the
   multiplicity-set version of the question. This is the object Erdős 607
   asks about. (The finer *multiset* of line sizes grows on a larger scale,
-  `exp(√n·log n)`; that is a different, strictly stronger quantity and is not
-  the claim made here.) The reduction to PBD profile *sets* is the step that
-  makes the `exp(√n)` bound apply at all.
+  `exp(√n·log n)`; that is a different, strictly stronger quantity and is
+  not the claim made here.) The reduction to PBD profile *sets* is the step
+  that makes the `exp(√n)` bound apply at all.
 
 ## Repository map
 
@@ -58,6 +68,9 @@ scale Erdős predicted.
 - `comparator.json` tells `lake comparator` which declarations must match.
 - `formalization.yaml` records the public result description, provenance,
   authorship, automation, fidelity, and review information.
+- `PROVENANCE.md` is the documented prior-art search: which element of the
+  result is new (the geometric corollary) and which is cited (the CPR-1984
+  PBD bound, the ST-1983 lower bound), with the sources examined.
 - `LICENSE` contains the Apache License 2.0 terms declared by
   `project.license`.
 - `docbuild/` is the nested doc-gen4 project.
@@ -93,10 +106,12 @@ The only `sorry` in the repository is the deliberate statement surface in
 
 The mathematical reduction (lines of a point set form a pairwise-balanced
 design, so multiplicity sets are exactly PBD profiles) was identified and
-audited by a human. The Lean formalization and tactic search were developed
-with an LLM agent (qwen3.8-27b served locally through llama-swap); Lean's
-kernel re-checks every proof step. See `formalization.yaml` for the full
-account.
+audited by a human. The prior-art search distinguishing the new geometric
+corollary from the cited CPR-1984 bound and the ST-1983 lower bound is
+documented in [PROVENANCE.md](PROVENANCE.md). The Lean formalization and
+tactic search were developed with an LLM agent (qwen3.8-27b served locally
+through llama-swap); Lean's kernel re-checks every proof step. See
+`formalization.yaml` for the full account.
 
 ## Submitting to Palomar
 

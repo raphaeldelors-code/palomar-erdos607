@@ -34,10 +34,22 @@ classification:
   msc2020: ["05D10", "52C10"]
 
 sources:
-  - title: "Upper bound exp(c·√n) on the number of distinct multiplicity sets of n-point plane configurations (Erdős problem 607)"
+  - title: "Geometric corollary settling Erdős 607: F(n) <= exp(c·√n) for the number of distinct line-size sets of n plane points"
     type: original-proof
     relationship: other
-    note: "The reduction (lines of a point set form a pairwise-balanced design, so multiplicity sets are PBD profiles) and the resulting upper bound are proved in this formalization."
+    note: >-
+      First presented here: the geometric corollary that the CPR-1984 PBD
+      profile-set bound, applied to the PBD family of point-set line sets,
+      gives F(n) <= exp(c·√n) for every n >= 2, answering the problem.
+      Precisely scoped — the underlying bound is CPR-1984 (cited, not new)
+      and the PBD characterization is the standard definition (not new);
+      only this geometric composition is the new element. The documented
+      prior-art search (PROVENANCE.md) examined the problem page, CPR-1984,
+      the Gyarfás-2002 and Erdős–Purdy-1978 geometry work, and the
+      FrontierMath Erdős and Gemini benchmark result lists, and found no
+      earlier statement of the geometric corollary. If an earlier statement
+      is identified, the source relationship will be corrected to
+      'background' and that work cited.
     author_endorsement: "n/a"
   - title: "Block Sizes in Pairwise Balanced Designs"
     authors:
@@ -67,23 +79,41 @@ sources:
     relationship: background
     id: "https://erdosproblems.com/607"
     location: "https://erdosproblems.com/607"
-    note: "The open problem whose order of growth is bounded by this result."
+    note: "The open problem whose order of growth is bounded by this result. As searched 2026-10-10 it lists no proof exposition (0), so the geometric corollary presented here is not already posted there."
+    author_endorsement: "n/a"
+  - title: "FrontierMath Erdős"
+    type: article
+    relationship: background
+    id: "https://arxiv.org/abs/2609.25050"
+    location: "arXiv:2609.25050, Appendix A (benchmark problem list) and results"
+    note: "Prior-art check: the 68-conjecture benchmark does not include Erdős 607, and its solved problems (#126, #548, #571, #577, #646, #769, #975) do not include it. Cited to document the search, not as a prior proof."
+    author_endorsement: "n/a"
+  - title: "Semi-Autonomous Mathematics Discovery with Gemini: A Case Study on the Erdős Problems"
+    type: article
+    relationship: background
+    id: "https://arxiv.org/abs/2601.22401"
+    location: "arXiv:2601.22401v3, resolved-problem list"
+    note: "Prior-art check: the 13 resolved problems (#652, #1051, #654, #1040, #397, #659, #935, #1089, #333, #591, #705, #992, #1105) do not include 607. Note Erdős 652 is described there as an immediate reduction to the literature, the same result-shape as ours, which is why the reduction character is disclosed. Cited to document the search, not as a prior proof."
     author_endorsement: "n/a"
 
 related_formalizations: []
 
 status:
   scope: >-
-    Formalizes the upper bound F(n) ≤ exp(c·√n) for every n ≥ 2 on the number
-    of distinct multiplicity sets of n-point plane configurations (Erdős
-    problem 607), conditional on the Colbourn–Phelps–Rödl (1984) PBD profile
-    bound, which is taken as the hypothesis hCPR and cited rather than
-    re-proved. The bound is stated for n ≥ 2 (a single point determines no
-    line), so the hypothesis is non-vacuous. Combined with the cited
-    Szemerédi–Trotter (1983) lower bound F(n) ≥ exp(c'·√n), the order of
-    growth is F(n) = exp(Θ(√n)). The proof library (Erdos607/Proof.lean)
-    contains no axioms and no sorry; the only sorry in the repository is the
-    deliberate statement surface in Challenge.lean.
+    Formalizes the geometric corollary that, for every n >= 2, the number
+    F(n) of distinct line-size sets of n-point plane configurations satisfies
+    F(n) <= exp(c·sqrt(n)), conditional on the Colbourn–Phelps–Rödl (1984)
+    PBD profile bound taken as the hypothesis hCPR. Precisely scoped: the
+    PBD characterization (lines of a point set form a PBD) is the standard
+    definition, the exp(c·sqrt(n)) bound is the cited CPR-1984 theorem, and
+    the new element is the geometric corollary — the bound applied to the
+    point-set line PBD family — settling Erdős 607. The bound is stated for
+    n >= 2 (a single point determines no line), so the hypothesis is
+    non-vacuous. Combined with the cited Szemerédi–Trotter (1983) lower
+    bound F(n) >= exp(c'·sqrt(n)), the order of growth is F(n) =
+    exp(Theta(sqrt(n))). The proof library (Erdos607/Proof.lean) contains no
+    axioms and no sorry; the only sorry in the repository is the deliberate
+    statement surface in Challenge.lean.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -118,11 +148,13 @@ fidelity:
     hypothesis (hCPR) rather than re-proved, and the bound is stated for
     n ≥ 2, the range in which it is meaningful (so the hypothesis is
     non-vacuous). The formalization proves the reduction from Erdős 607
-    multiplicity sets to PBD profile sets and the resulting exp(c·√n) upper
-    bound conditional on that published theorem. The matching
-    Szemerédi–Trotter (1983) lower bound F(n) ≥ exp(c'·√n), used to state the
-    order of growth F(n) = exp(Θ(√n)), is cited and not re-proved or
-    formalized.
+    multiplicity sets to PBD profile sets and the resulting geometric
+    corollary exp(c·√n) conditional on that published theorem. The new
+    element is the geometric corollary (the bound applied to point-set line
+    PBD families), not the underlying PBD bound, which is cited. The
+    matching Szemerédi–Trotter (1983) lower bound F(n) ≥ exp(c'·√n), used to
+    state the order of growth F(n) = exp(Θ(√n)), is cited and not re-proved
+    or formalized. See PROVENANCE.md for the prior-art search.
 
 review:
   status: "self-assessed"
