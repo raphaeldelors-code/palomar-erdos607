@@ -81,8 +81,11 @@ taken from the published literature. The full prior-art search is in
 
 The root uses `lakefile.toml`, the Lean toolchain
 `leanprover/lean4:v4.35.0-rc2` (Palomar requires v4.35.0-rc2 or later), and
-committed Lake manifests. Everything that judges a submission comes from
-`lean-toolchain`. GitHub Actions builds the Lean project with `lean-action`,
+committed Lake manifests. These pins determine the local verification
+basis, which is a local check: it is a faithful local approximation of,
+but not identical to, Palomar's verification (Palomar uses
+verifier-pinned tools and its own protected verification process). GitHub
+Actions builds the Lean project with `lean-action`,
 generates API documentation with doc-gen4, and independently checks the
 advertised statement with `lake comparator`. Actions are pinned to immutable
 commits.

@@ -4,9 +4,10 @@ set -euo pipefail
 # Judge Solution against Challenge the way Palomar does: with the `lake
 # comparator` that ships in this project's own toolchain, replaying the proof
 # through Lean's kernel and the toolchain's bundled independent kernels
-# (NanoDa and con-ron). Nothing is built from a pin; everything that judges
-# comes from `lean-toolchain`, which Palomar requires to be v4.35.0-rc2 or
-# later.
+# (NanoDa and con-ron). Nothing is built from a pin; the judging basis here
+# is the `lean-toolchain` version (Palomar requires v4.35.0-rc2 or later).
+# This is a LOCAL check: it approximates Palomar's verification, which uses
+# verifier-pinned tools and its own protected verification process.
 repository_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$repository_root"
 
