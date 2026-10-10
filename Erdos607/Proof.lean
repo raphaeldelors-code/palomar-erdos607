@@ -13,7 +13,7 @@ namespace Erdos607
 /-- Three points p, q, r in ℝ² are collinear iff the cross product
     (q − p) × (r − p) vanishes, i.e.
     (q.1 - p.1) * (r.2 - p.2) = (q.2 - p.2) * (r.1 - p.1). -/
-def collinear (p q r : ℝ × ℝ) : Prop :=
+public def collinear (p q r : ℝ × ℝ) : Prop :=
   (q.1 - p.1) * (r.2 - p.2) = (q.2 - p.2) * (r.1 - p.1)
 
 /-! ## Basic collinear symmetries -/
@@ -111,12 +111,12 @@ theorem line_eq
 /-! ## Blocks and collinear sets -/
 
 /-- The set of points of P collinear with p and q. -/
-noncomputable def collinearSet (P : Finset (ℝ × ℝ)) (p q : ℝ × ℝ) : Finset (ℝ × ℝ) :=
+public noncomputable def collinearSet (P : Finset (ℝ × ℝ)) (p q : ℝ × ℝ) : Finset (ℝ × ℝ) :=
   P.filter (fun z => collinear p q z)
 
 /-- The blocks of P: for each p ∈ P, for each q ∈ P \ {p}, take
     collinearSet P p q; keep only blocks of size ≥ 2. -/
-noncomputable def blocks (P : Finset (ℝ × ℝ)) : Finset (Finset (ℝ × ℝ)) :=
+public noncomputable def blocks (P : Finset (ℝ × ℝ)) : Finset (Finset (ℝ × ℝ)) :=
   (Finset.biUnion P (fun p => Finset.image (fun q => collinearSet P p q) (P.erase p))).filter (fun B => 2 ≤ B.card)
 
 /-- Every block of P is a subset of P. -/
@@ -136,14 +136,14 @@ lemma blocks_subset (P : Finset (ℝ × ℝ)) (B : Finset (ℝ × ℝ))
 
 /-- A collection B of finsets of Fin n is a PBD if every block has size ≥ 2
     and every pair of distinct points lies in exactly one block. -/
-def isPBD (B : Finset (Finset (Fin n))) : Prop :=
+public def isPBD (n : ℕ) (B : Finset (Finset (Fin n))) : Prop :=
   (∀ b ∈ B, 2 ≤ b.card) ∧
   (∀ x y : Fin n, x ≠ y → (∃! b, b ∈ B ∧ x ∈ b ∧ y ∈ b))
 
 /-- The set of all PBD profile sets on an n-element universe: for each PBD
     on Fin n, record the set of block sizes. -/
 public noncomputable def pbdProfileSets (n : ℕ) : Finset (Finset ℕ) :=
-  (Finset.univ : Finset (Finset (Finset (Fin n)))).filter isPBD |>.image (fun B => B.image Finset.card)
+  (Finset.univ : Finset (Finset (Finset (Fin n)))).filter (fun B => isPBD n B) |>.image (fun B => B.image Finset.card)
 
 /-! ## Multiplicity sets of point sets -/
 
@@ -307,7 +307,7 @@ theorem A_in_pbdProfileSets (n : ℕ) (P : Finset (ℝ × ℝ)) (h : P.card = n)
         he.injective h_eq
       exact congrArg Subtype.val hsub
     -- blocks' is a PBD on Fin n
-    have hPBD : isPBD blocks' := by
+    have hPBD : isPBD n blocks' := by
       constructor
       · intro b hb
         obtain ⟨B, hB, rfl⟩ := Finset.mem_image.mp hb

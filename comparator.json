@@ -1,8 +1,11 @@
 {
   "challenge_module": "Challenge",
   "solution_module": "Solution",
-  "theorem_names": ["main_result"],
-  "definition_names": [],
+  "theorem_names": ["E607.main_result"],
+  "definition_names": [
+    "E607.pbdProfileSets",
+    "E607.A"
+  ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true
 }
