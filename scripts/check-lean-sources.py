@@ -3,6 +3,7 @@
 
 Scanner functions follow PalomarSubmission/scripts/source_requirements.py.
 """
+import json
 import os
 import re
 from pathlib import Path
@@ -17,7 +18,7 @@ ID_LETTER_LIKE = (
 )
 ID_FIRST = rf"A-Za-z_{ID_LETTER_LIKE}"
 ID_REST = rf"{ID_FIRST}0-9'!?\u2080-\u2089\u2090-\u209c\u1d62-\u1d6a\u2c7c"
-IDENTIFIER_CONTINUATION = re.compile(rf"[{ID_REST}]|\.[{ID_FIRST}«]")
+IDENTIFIER_CONTINUATION = re.compile(rf"[{ID_REST}]|\.[{ID_FIRST}\u00ab]")
 
 
 def has_module_header(text: str) -> bool:
@@ -78,6 +79,97 @@ def lean_source_files(root: Path) -> list[Path]:
     return files
 
 
+def strip_comments_and_strings(text: str) -> str:
+    """Blank comment and string contents (kept as spaces) so a lexical scan sees
+    only real code. Offsets and line breaks are preserved.
+
+    Strips `--` line comments, `/- -/` block comments (all variants, nesting
+    matches Lean's lexer), and `"..."` string literals (backslash escapes).
+    """
+    out = list(text)
+    n = len(text)
+    i = 0
+
+    def blank(start: int, end: int) -> None:
+        for m in range(start, end):
+            if out[m] != "\n":
+                out[m] = " "
+
+    while i < n:
+        c = text[i]
+        nxt = text[i + 1] if i + 1 < n else ""
+        if c == "-" and nxt == "-":                      # line comment
+            start = i
+            while i < n and text[i] != "\n":
+                i += 1
+            blank(start, i)
+            continue
+        if c == "/" and nxt == "-":                      # block comment /- /-! /--
+            start = i
+            i += 2
+            depth = 1
+            while i < n and depth:
+                if text[i] == "/" and i + 1 < n and text[i + 1] == "-":
+                    depth += 1
+                    i += 2
+                elif text[i] == "-" and i + 1 < n and text[i + 1] == "/":
+                    depth -= 1
+                    i += 2
+                else:
+                    i += 1
+            blank(start, i)
+            continue
+        if c == '"':                                     # string literal
+            start = i
+            i += 1
+            while i < n and text[i] != '"':
+                if text[i] == "\\" and i + 1 < n:
+                    i += 2
+                else:
+                    i += 1
+            if i < n:
+                i += 1                                   # consume closing quote
+            blank(start, i)
+            continue
+        i += 1
+    return "".join(out)
+
+
+AXIOM_DECL = re.compile(r"\baxiom\b")
+
+
+def axiom_declaration_lines(text: str) -> list[int]:
+    """1-indexed lines containing an `axiom` declaration in real code.
+
+    `axiom` is a Lean command keyword. The word boundary excludes the print
+    command `axioms` and identifiers such as `myAxiom`/`AxiomOfChoice`.
+    """
+    stripped = strip_comments_and_strings(text)
+    return [stripped.count("\n", 0, m.start()) + 1 for m in AXIOM_DECL.finditer(stripped)]
+
+
+def check_permitted_axioms(root: Path) -> bool:
+    """comparator.json must pin a non-empty `permitted_axioms` whitelist.
+
+    The comparator's axiom check is only as strong as the whitelist it is given;
+    an empty or missing whitelist would let an `axiom` slide through silently.
+    """
+    cfg = root / "comparator.json"
+    if not cfg.is_file():
+        print("comparator.json: missing — the comparator config (with permitted_axioms) is required")
+        return False
+    try:
+        data = json.loads(cfg.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as exc:
+        print(f"comparator.json: unreadable ({exc})")
+        return False
+    whitelist = data.get("permitted_axioms")
+    if not isinstance(whitelist, list) or not whitelist:
+        print("comparator.json: `permitted_axioms` must be a non-empty whitelist of standard axioms")
+        return False
+    return True
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     failed = False
@@ -99,6 +191,15 @@ def main() -> int:
         if physical_lines(text) > 10_000:
             print(f"{relative}: exceeds 10,000 lines; split into smaller modules")
             failed = True
+        for line_no in axiom_declaration_lines(text):
+            print(
+                f"{relative}:{line_no}: declares an `axiom`; the result must rest on "
+                "standard axioms only (comparator.json `permitted_axioms`). Prove the "
+                "claim, or add the axiom to the whitelist and re-run the comparator."
+            )
+            failed = True
+    if not check_permitted_axioms(root):
+        failed = True
     return int(failed)
 
 
